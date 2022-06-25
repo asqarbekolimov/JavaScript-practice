@@ -146,7 +146,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  // const modalTimer = setTimeout(openModal, 5000)
+  const modalTimer = setTimeout(openModal, 5000)
 
   function showModalByScroll() {
     if (
@@ -233,4 +233,44 @@ window.addEventListener('DOMContentLoaded', () => {
     30,
     `.menu .container`,
   ).render()
+
+  //Form
+  const forms = document.querySelectorAll('#from')
+
+  forms.forEach((form) => {
+    postData(form)
+  })
+
+  const msg = {
+    loading: 'Loading...',
+    succes: 'Thank`s for submitting our form',
+    failure: 'Something went wrong',
+  }
+
+  function postData(form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      const statusMessage = document.createElement('div')
+      statusMessage.textContent = msg.loading
+      form.append(statusMessage)
+
+      const request = new XMLHttpRequest()
+      request.open('POST', 'server.php')
+
+      request.setRequestHeader('Content-Type', 'multipart/form-data')
+      const formData = new FormData(form)
+
+      request.send(formData)
+
+      request.addEventListener('load', () => {
+        if (request.status == 200) {
+          console.log(request.response)
+          statusMessage.textContent = msg.succes
+        } else {
+          statusMessage.textContent = msg.failure
+        }
+      })
+    })
+  }
 })
