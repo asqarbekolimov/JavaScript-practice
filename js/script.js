@@ -234,8 +234,8 @@ window.addEventListener('DOMContentLoaded', () => {
     `.menu .container`,
   ).render()
 
-  //Form
-  const forms = document.querySelectorAll('#from')
+  // Form
+  const forms = document.querySelectorAll('form')
 
   forms.forEach((form) => {
     postData(form)
@@ -243,7 +243,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const msg = {
     loading: 'Loading...',
-    succes: 'Thank`s for submitting our form',
+    success: "Thank's for submitting our form",
     failure: 'Something went wrong',
   }
 
@@ -258,15 +258,27 @@ window.addEventListener('DOMContentLoaded', () => {
       const request = new XMLHttpRequest()
       request.open('POST', 'server.php')
 
-      request.setRequestHeader('Content-Type', 'multipart/form-data')
+      request.setRequestHeader('Content-Type', 'application/json')
+
+      const obj = {}
       const formData = new FormData(form)
 
-      request.send(formData)
+      formData.forEach((val, key) => {
+        obj[key] = val
+      })
+
+      const json = JSON.stringify(obj)
+
+      request.send(json)
 
       request.addEventListener('load', () => {
-        if (request.status == 200) {
+        if (request.status === 200) {
           console.log(request.response)
-          statusMessage.textContent = msg.succes
+          statusMessage.textContent = msg.success
+          form.reset()
+          setTimeout(() => {
+            statusMessage.remove()
+          }, 2000)
         } else {
           statusMessage.textContent = msg.failure
         }
