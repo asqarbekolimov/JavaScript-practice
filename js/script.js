@@ -1,19 +1,18 @@
-'use strict'
 window.addEventListener('DOMContentLoaded', () => {
-  //Loader
-  const loader = document.querySelector('.loader')
+  const tabsParent = document.querySelector('.tabheader__items'),
+    tabs = document.querySelectorAll('.tabheader__item'),
+    tabsContent = document.querySelectorAll('.tabcontent'),
+    loader = document.querySelector('.loader')
+
+  // Loader
   setTimeout(() => {
     loader.style.opacity = '0'
     setTimeout(() => {
       loader.style.display = 'none'
-    }, 1000)
-  }, 1500)
+    }, 500)
+  }, 2000)
 
-  //Tabs
-  const tabsParent = document.querySelector('.tabheader__items'),
-    tabs = document.querySelectorAll('.tabheader__item'),
-    tabsContent = document.querySelectorAll('.tabcontent')
-
+  // Tabs
   function hideTabContent() {
     tabsContent.forEach((item) => {
       item.classList.add('hide')
@@ -46,13 +45,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  //Time
+  // Timer
 
   const deadline = '2022-08-11'
 
-  function getTimeRemanining(endtime) {
+  function getTimeRemaining(endtime) {
     let days, hours, minutes, seconds
-
     const timer = Date.parse(endtime) - Date.parse(new Date())
 
     if (timer <= 0) {
@@ -67,13 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
       seconds = Math.floor((timer / 1000) % 60)
     }
 
-    return {
-      total: timer,
-      days: days,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds,
-    }
+    return { timer, days, hours, minutes, seconds }
   }
 
   function getZero(num) {
@@ -90,11 +82,12 @@ window.addEventListener('DOMContentLoaded', () => {
       hours = timer.querySelector('#hours'),
       minutes = timer.querySelector('#minutes'),
       seconds = timer.querySelector('#seconds'),
-      timeInterval = setInterval(updateClock, 1000)
-    updateClock()
+      timeInterval = setInterval(updatClock, 1000)
 
-    function updateClock() {
-      const t = getTimeRemanining(endtime)
+    updatClock()
+
+    function updatClock() {
+      const t = getTimeRemaining(endtime)
 
       days.innerHTML = getZero(t.days)
       hours.innerHTML = getZero(t.hours)
@@ -109,14 +102,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   setClock('.timer', deadline)
 
-  //Modal
-
-  function openModal() {
-    modal.classList.add('show')
-    modal.classList.remove('hide')
-    document.body.style.overflow = 'hidden'
-    clearInterval(modalTimer)
-  }
+  // Modal
+  const modalTrigger = document.querySelectorAll('[data-modal]'),
+    modal = document.querySelector('.modal')
 
   function closeModal() {
     modal.classList.add('hide')
@@ -124,29 +112,30 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = ''
   }
 
-  const modalTriger = document.querySelectorAll('[data-modal]'),
-    modal = document.querySelector('.modal'),
-    modalCloseBtn = document.querySelector('[data-close]')
+  function openModal() {
+    modal.classList.add('show')
+    modal.classList.remove('hide')
+    document.body.style.overflow = 'hidden'
+    clearInterval(modalTimerId)
+  }
 
-  modalTriger.forEach((item) => {
+  modalTrigger.forEach((item) => {
     item.addEventListener('click', openModal)
   })
 
-  modalCloseBtn.addEventListener('click', closeModal)
-
   modal.addEventListener('click', (e) => {
-    if (e.target == modal) {
+    if (e.target == modal || e.target.getAttribute('data-close') == '') {
       closeModal()
     }
   })
 
   document.addEventListener('keydown', (e) => {
-    if (e.code == 'Escape' && modal.classList.contains('show')) {
+    if (e.code === 'Escape' && modal.classList.contains('show')) {
       closeModal()
     }
   })
 
-  const modalTimer = setTimeout(openModal, 5000)
+  const modalTimerId = setTimeout(openModal, 50000)
 
   function showModalByScroll() {
     if (
@@ -171,17 +160,17 @@ window.addEventListener('DOMContentLoaded', () => {
       this.classes = classes
       this.parent = document.querySelector(parentSelector)
       this.transfer = 11000
-      this.changeToUZS()
+      this.chageToUZS()
     }
 
-    changeToUZS() {
+    chageToUZS() {
       this.price = this.price * this.transfer
     }
 
     render() {
       const element = document.createElement('div')
 
-      if (this.classes.length == 0) {
+      if (this.classes.length === 0) {
         this.element = 'menu__item'
         element.classList.add(this.element)
       } else {
@@ -204,34 +193,32 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   new MenuCard(
-    `img/tabs/1.png`,
-    `Usual`,
-    `Plan "Usual"`,
-    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem
-    praesentium ab cupiditate beatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis
-    harum voluptatum in.`,
+    'img/tabs/1.png',
+    'usual',
+    'Plan "Usual"',
+    'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem praesentium ab cupiditatebeatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis harum voluptatum in.',
     10,
-    `.menu .container`,
+    '.menu .container',
   ).render()
+
   new MenuCard(
-    `img/tabs/2.jpg`,
-    `premium`,
-    `Plan "Premium"`,
-    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem
-    praesentium ab cupiditate beatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis
-    harum voluptatum in.`,
+    'img/tabs/2.jpg',
+    'plan',
+    'Plan “Premium”',
+    'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem praesentium ab cupiditatebeatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis harum voluptatum in.',
     20,
-    `.menu .container`,
+    '.menu .container',
+    'menu__item',
   ).render()
+
   new MenuCard(
-    `img/tabs/3.jpg`,
-    `Vip`,
-    `Plan "Vip"`,
-    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem
-    praesentium ab cupiditate beatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis
-    harum voluptatum in.`,
+    'img/tabs/3.jpg',
+    'vip',
+    'Plan VIP',
+    'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit nesciunt facere, sequi exercitationem praesentium ab cupiditatebeatae debitis perspiciatis itaque quaerat id modi corporis delectus ratione nobis harum voluptatum in.',
     30,
-    `.menu .container`,
+    '.menu .container',
+    'menu__item',
   ).render()
 
   // Form
@@ -242,7 +229,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
   const msg = {
-    loading: 'Loading...',
+    loading: 'img/spinner.svg',
     success: "Thank's for submitting our form",
     failure: 'Something went wrong',
   }
@@ -251,38 +238,77 @@ window.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
       e.preventDefault()
 
-      const statusMessage = document.createElement('div')
-      statusMessage.textContent = msg.loading
-      form.append(statusMessage)
+      const statusMessage = document.createElement('img')
+      statusMessage.src = msg.loading
+      statusMessage.style.cssText = `
+        display: block;
+        margin: 0 auto;
+      `
+      form.insertAdjacentElement('afterend', statusMessage)
 
-      const request = new XMLHttpRequest()
-      request.open('POST', 'server.php')
-
-      request.setRequestHeader('Content-Type', 'application/json')
-
-      const obj = {}
       const formData = new FormData(form)
 
+      const obj = {}
       formData.forEach((val, key) => {
         obj[key] = val
       })
 
-      const json = JSON.stringify(obj)
-
-      request.send(json)
-
-      request.addEventListener('load', () => {
-        if (request.status === 200) {
-          console.log(request.response)
-          statusMessage.textContent = msg.success
-          form.reset()
-          setTimeout(() => {
-            statusMessage.remove()
-          }, 2000)
-        } else {
-          statusMessage.textContent = msg.failure
-        }
+      fetch('server.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
       })
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(data)
+          showThanksModal(msg.success)
+          statusMessage.remove()
+        })
+        .catch(() => {
+          showThanksModal(msg.failure)
+        })
+        .finally(() => {
+          form.reset()
+        })
+
+      // request.addEventListener('load', () => {
+      //   if (request.status === 200) {
+      //     console.log(request.response)
+      //     showThanksModal(msg.success)
+      //     form.reset()
+      //     setTimeout(() => {
+      //       statusMessage.remove()
+      //     }, 2000)
+      //   } else {
+      //     showThanksModal(msg.failure)
+      //   }
+      // })
     })
+  }
+
+  function showThanksModal(message) {
+    const prevModalDialog = document.querySelector('.modal__dialog')
+
+    prevModalDialog.classList.add('hide')
+    openModal()
+
+    const thanksModal = document.createElement('div')
+    thanksModal.classList.add('modal__dialog')
+    thanksModal.innerHTML = `
+      <div class="modal__content">
+        <div data-close class="modal__close">&times;</div>
+        <div class="modal__title">${message}</div>
+      </div>
+    `
+
+    document.querySelector('.modal').append(thanksModal)
+    setTimeout(() => {
+      thanksModal.remove()
+      prevModalDialog.classList.add('show')
+      prevModalDialog.classList.remove('hide')
+      closeModal()
+    }, 4000)
   }
 })
